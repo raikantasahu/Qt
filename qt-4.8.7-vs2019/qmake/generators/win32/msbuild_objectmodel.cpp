@@ -1497,9 +1497,26 @@ void VCXProjectWriter::write(XmlOutput &xml, const VCCustomBuildTool &tool)
 
     if ( !tool.AdditionalDependencies.isEmpty() )
     {
-        xml << tag("AdditionalInputs")
+        QStringList additionalDependencies = tool.AdditionalDependencies;
+
+        QStringList::iterator iter = additionalDependencies.begin();
+        QStringList::iterator end = additionalDependencies.end();
+        for ( int i = 0; iter != end; ++iter, ++i )
+        {
+           debug_msg(1, "AdditionalDependences[%d]: %s", i, additionalDependencies[i].toLatin1().constData());
+        }
+
+        // When using MOC, AdditionalDependencies uses "@echo" as the first item of the list. Not
+        // sure why. That was good for vcproj files but not good for vcxproj files. Remove the
+        // "@echo" part if the description says it's the MOC.
+        if ( tool.Description.startsWith("MOC ") && (additionalDependencies[0] == "@echo") )
+        {
+           additionalDependencies.pop_front();
+        }
+
+        xml << tag("Inputs")
             << attrTag("Condition", condition)
-            << valueTagDefX(tool.AdditionalDependencies, "AdditionalInputs", ";");
+            << valueTagDefX(additionalDependencies, "Inputs", ";");
     }
 
     if( !tool.CommandLine.isEmpty() )
