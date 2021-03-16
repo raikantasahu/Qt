@@ -1567,7 +1567,7 @@ void VCXProjectWriter::write(XmlOutput &xml, const VCConfiguration &tool)
         xml << tag("PropertyGroup")
             << attrTag("Condition", generateCondition(tool))
             << attrTag("Label", "Configuration")
-            << attrTagS(_PlatformToolSet, platformToolSetVersion(tool.CompilerVersion))
+            << attrTagS(_PlatformToolSet, platformToolSetVersion(tool.VSVersion))
             << attrTagS(_OutputDirectory, tool.OutputDirectory)
             << attrTagT(_ATLMinimizesCRunTimeLibraryUsage, tool.ATLMinimizesCRunTimeLibraryUsage)
             << attrTagT(_BuildBrowserInformation, tool.BuildBrowserInformation)
@@ -1969,13 +1969,13 @@ QString VCXProjectWriter::generateCondition(const VCConfiguration &config)
     return QLatin1String("'$(Configuration)|$(Platform)'=='") + config.Name + QLatin1Char('\'');
 }
 
-QString VCXProjectWriter::platformToolSetVersion(const DotNET version)
+QString VCXProjectWriter::platformToolSetVersion(const VisualStudioVersion version)
 {
     switch (version)
     {
-    case NET2012:
+    case VS2012:
         return "v110";
-    case NET2013:
+    case VS2013:
         return "v120";
     }
     return QString();

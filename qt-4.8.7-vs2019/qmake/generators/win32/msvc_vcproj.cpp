@@ -71,59 +71,59 @@ QT_END_NAMESPACE
 QT_BEGIN_NAMESPACE
 
 struct {
-    DotNET version;
+    VisualStudioVersion version;
     const char *versionStr;
     const char *regKey;
 } dotNetCombo[] = {
 #ifdef Q_OS_WIN64
-    {NET2013, "MSVC.NET 2013 (12.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\12.0\\Setup\\VC\\ProductDir"},
-    {NET2013, "MSVC.NET 2013 Express Edition (12.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\12.0\\Setup\\VC\\ProductDir"},
-    {NET2012, "MSVC.NET 2012 (11.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\11.0\\Setup\\VC\\ProductDir"},
-    {NET2012, "MSVC.NET 2012 Express Edition (11.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\11.0\\Setup\\VC\\ProductDir"},
-    {NET2010, "MSVC.NET 2010 (10.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\10.0\\Setup\\VC\\ProductDir"},
-    {NET2010, "MSVC.NET 2010 Express Edition (10.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\10.0\\Setup\\VC\\ProductDir"},
-    {NET2008, "MSVC.NET 2008 (9.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\9.0\\Setup\\VC\\ProductDir"},
-    {NET2008, "MSVC.NET 2008 Express Edition (9.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\9.0\\Setup\\VC\\ProductDir"},
-    {NET2005, "MSVC.NET 2005 (8.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\8.0\\Setup\\VC\\ProductDir"},
-    {NET2005, "MSVC.NET 2005 Express Edition (8.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\8.0\\Setup\\VC\\ProductDir"},
-    {NET2003, "MSVC.NET 2003 (7.1)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\7.1\\Setup\\VC\\ProductDir"},
-    {NET2002, "MSVC.NET 2002 (7.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\7.0\\Setup\\VC\\ProductDir"},
+    {VS2013, "MSVC.NET 2013 (12.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\12.0\\Setup\\VC\\ProductDir"},
+    {VS2013, "MSVC.NET 2013 Express Edition (12.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\12.0\\Setup\\VC\\ProductDir"},
+    {VS2012, "MSVC.NET 2012 (11.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\11.0\\Setup\\VC\\ProductDir"},
+    {VS2012, "MSVC.NET 2012 Express Edition (11.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\11.0\\Setup\\VC\\ProductDir"},
+    {VS2010, "MSVC.NET 2010 (10.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\10.0\\Setup\\VC\\ProductDir"},
+    {VS2010, "MSVC.NET 2010 Express Edition (10.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\10.0\\Setup\\VC\\ProductDir"},
+    {VS2008, "MSVC.NET 2008 (9.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\9.0\\Setup\\VC\\ProductDir"},
+    {VS2008, "MSVC.NET 2008 Express Edition (9.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\9.0\\Setup\\VC\\ProductDir"},
+    {VS2005, "MSVC.NET 2005 (8.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\8.0\\Setup\\VC\\ProductDir"},
+    {VS2005, "MSVC.NET 2005 Express Edition (8.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\8.0\\Setup\\VC\\ProductDir"},
+    {VS2003, "MSVC.NET 2003 (7.1)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\7.1\\Setup\\VC\\ProductDir"},
+    {VS2002, "MSVC.NET 2002 (7.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\7.0\\Setup\\VC\\ProductDir"},
 #else
-    {NET2013, "MSVC.NET 2013 (12.0)", "Software\\Microsoft\\VisualStudio\\12.0\\Setup\\VC\\ProductDir"},
-    {NET2013, "MSVC.NET 2013 Express Edition (12.0)", "Software\\Microsoft\\VCExpress\\12.0\\Setup\\VC\\ProductDir"},
-    {NET2012, "MSVC.NET 2012 (11.0)", "Software\\Microsoft\\VisualStudio\\11.0\\Setup\\VC\\ProductDir"},
-    {NET2012, "MSVC.NET 2012 Express Edition (11.0)", "Software\\Microsoft\\VCExpress\\11.0\\Setup\\VC\\ProductDir"},
-    {NET2010, "MSVC.NET 2010 (10.0)", "Software\\Microsoft\\VisualStudio\\10.0\\Setup\\VC\\ProductDir"},
-    {NET2010, "MSVC.NET 2010 Express Edition (10.0)", "Software\\Microsoft\\VCExpress\\10.0\\Setup\\VC\\ProductDir"},
-    {NET2008, "MSVC.NET 2008 (9.0)", "Software\\Microsoft\\VisualStudio\\9.0\\Setup\\VC\\ProductDir"},
-    {NET2008, "MSVC.NET 2008 Express Edition (9.0)", "Software\\Microsoft\\VCExpress\\9.0\\Setup\\VC\\ProductDir"},
-    {NET2005, "MSVC.NET 2005 (8.0)", "Software\\Microsoft\\VisualStudio\\8.0\\Setup\\VC\\ProductDir"},
-    {NET2005, "MSVC.NET 2005 Express Edition (8.0)", "Software\\Microsoft\\VCExpress\\8.0\\Setup\\VC\\ProductDir"},
-    {NET2003, "MSVC.NET 2003 (7.1)", "Software\\Microsoft\\VisualStudio\\7.1\\Setup\\VC\\ProductDir"},
-    {NET2002, "MSVC.NET 2002 (7.0)", "Software\\Microsoft\\VisualStudio\\7.0\\Setup\\VC\\ProductDir"},
+    {VS2013, "MSVC.NET 2013 (12.0)", "Software\\Microsoft\\VisualStudio\\12.0\\Setup\\VC\\ProductDir"},
+    {VS2013, "MSVC.NET 2013 Express Edition (12.0)", "Software\\Microsoft\\VCExpress\\12.0\\Setup\\VC\\ProductDir"},
+    {VS2012, "MSVC.NET 2012 (11.0)", "Software\\Microsoft\\VisualStudio\\11.0\\Setup\\VC\\ProductDir"},
+    {VS2012, "MSVC.NET 2012 Express Edition (11.0)", "Software\\Microsoft\\VCExpress\\11.0\\Setup\\VC\\ProductDir"},
+    {VS2010, "MSVC.NET 2010 (10.0)", "Software\\Microsoft\\VisualStudio\\10.0\\Setup\\VC\\ProductDir"},
+    {VS2010, "MSVC.NET 2010 Express Edition (10.0)", "Software\\Microsoft\\VCExpress\\10.0\\Setup\\VC\\ProductDir"},
+    {VS2008, "MSVC.NET 2008 (9.0)", "Software\\Microsoft\\VisualStudio\\9.0\\Setup\\VC\\ProductDir"},
+    {VS2008, "MSVC.NET 2008 Express Edition (9.0)", "Software\\Microsoft\\VCExpress\\9.0\\Setup\\VC\\ProductDir"},
+    {VS2005, "MSVC.NET 2005 (8.0)", "Software\\Microsoft\\VisualStudio\\8.0\\Setup\\VC\\ProductDir"},
+    {VS2005, "MSVC.NET 2005 Express Edition (8.0)", "Software\\Microsoft\\VCExpress\\8.0\\Setup\\VC\\ProductDir"},
+    {VS2003, "MSVC.NET 2003 (7.1)", "Software\\Microsoft\\VisualStudio\\7.1\\Setup\\VC\\ProductDir"},
+    {VS2002, "MSVC.NET 2002 (7.0)", "Software\\Microsoft\\VisualStudio\\7.0\\Setup\\VC\\ProductDir"},
 #endif
-    {NETUnknown, "", ""},
+    {VSUnknown, "", ""},
 };
 
 QT_END_NAMESPACE
 #endif
 
 QT_BEGIN_NAMESPACE
-DotNET which_dotnet_version()
+VisualStudioVersion which_dotnet_version()
 {
 #ifndef Q_OS_WIN32
-    return NET2002; // Always generate 7.0 versions on other platforms
+    return VS2002; // Always generate 7.0 versions on other platforms
 #else
     // Only search for the version once
-    static DotNET current_version = NETUnknown;
-    if(current_version != NETUnknown)
+    static VisualStudioVersion current_version = VSUnknown;
+    if(current_version != VSUnknown)
         return current_version;
 
     // Fallback to .NET 2002
-    current_version = NET2002;
+    current_version = VS2002;
 
     QStringList warnPath;
-    QHash<DotNET, QString> installPaths;
+    QHash<VisualStudioVersion, QString> installPaths;
     int installed = 0;
     int i = 0;
     for(; dotNetCombo[i].version; ++i) {
@@ -419,25 +419,25 @@ void VcprojGenerator::writeSubDirs(QTextStream &t)
     }
 
     switch(which_dotnet_version()) {
-    case NET2013:
+    case VS2013:
         t << _slnHeader120;
         break;
-    case NET2012:
+    case VS2012:
         t << _slnHeader110;
         break;
-    case NET2010:
+    case VS2010:
         t << _slnHeader100;
         break;
-    case NET2008:
+    case VS2008:
         t << _slnHeader90;
         break;
-    case NET2005:
+    case VS2005:
         t << _slnHeader80;
         break;
-    case NET2003:
+    case VS2003:
         t << _slnHeader71;
         break;
-    case NET2002:
+    case VS2002:
         t << _slnHeader70;
         break;
     default:
@@ -848,27 +848,27 @@ void VcprojGenerator::initProject()
     // Own elements -----------------------------
     vcProject.Name = unescapeFilePath(project->first("QMAKE_ORIG_TARGET"));
     switch(which_dotnet_version()) {
-    case NET2013:
+    case VS2013:
         vcProject.Version = "13.00";
         break;
-    case NET2012:
+    case VS2012:
         vcProject.Version = "12.00";
         break;
-    case NET2010:
+    case VS2010:
         vcProject.Version = "10.00";
         break;
-    case NET2008:
+    case VS2008:
         vcProject.Version = "9,00";
         break;
-    case NET2005:
+    case VS2005:
                 //### using ',' because of a bug in 2005 B2
                 //### VS uses '.' or ',' depending on the regional settings! Using ',' always works.
         vcProject.Version = "8,00";
         break;
-    case NET2003:
+    case VS2003:
         vcProject.Version = "7.10";
         break;
-    case NET2002:
+    case VS2002:
         vcProject.Version = "7.00";
         break;
     default:
@@ -895,7 +895,7 @@ void VcprojGenerator::initConfiguration()
     // - Do this first since main configuration elements may need
     // - to know of certain compiler/linker options
     VCConfiguration &conf = vcProject.Configuration;
-    conf.CompilerVersion = which_dotnet_version();
+    conf.VSVersion = which_dotnet_version();
 
     initCompilerTool();
 
@@ -931,7 +931,7 @@ void VcprojGenerator::initConfiguration()
         conf.OutputDirectory = ".\\";
     if (!conf.OutputDirectory.endsWith("\\"))
         conf.OutputDirectory += '\\';
-    if (conf.CompilerVersion >= NET2010) {
+    if (conf.VSVersion >= VS2010) {
         const QFileInfo targetInfo = fileInfo(project->first("MSVCPROJ_TARGET"));
         conf.PrimaryOutput = targetInfo.completeBaseName();
 
@@ -989,7 +989,7 @@ void VcprojGenerator::initCompilerTool()
         placement = ".\\";
 
     VCConfiguration &conf = vcProject.Configuration;
-    if (conf.CompilerVersion >= NET2010) {
+    if (conf.VSVersion >= VS2010) {
         // adjust compiler tool defaults for VS 2010 and above
         conf.compiler.Optimization = optimizeDisabled;
     }
@@ -1004,7 +1004,7 @@ void VcprojGenerator::initCompilerTool()
         conf.compiler.PrecompiledHeaderThrough = project->first("PRECOMPILED_HEADER");
         conf.compiler.ForcedIncludeFiles       = project->values("PRECOMPILED_HEADER");
 
-        if (conf.CompilerVersion <= NET2003) {
+        if (conf.VSVersion <= VS2003) {
             // Minimal build option triggers an Internal Compiler Error
             // when used in conjunction with /FI and /Yu, so remove it
             // ### work-around for a VS 2003 bug. Move to some prf file or remove completely.

@@ -373,7 +373,7 @@ VCCLCompilerTool::VCCLCompilerTool()
 /*
  * Some values for the attribute UsePrecompiledHeader have changed from VS 2003 to VS 2005,
  * see the following chart, so we need a function that transforms those values if we are
- * using NET2005:
+ * using VS2005:
  *
  * Meaning                      2003    2005
  * -----------------------------------------
@@ -383,21 +383,21 @@ VCCLCompilerTool::VCCLCompilerTool()
  * Use specific PCH (/Yu)       3       2
  *
  */
-inline XmlOutput::xml_output xformUsePrecompiledHeaderForNET2005(pchOption whatPch, DotNET compilerVersion)
+inline XmlOutput::xml_output xformUsePrecompiledHeaderForVS2005(pchOption whatPch, VisualStudioVersion vsVersion)
 {
-    if (compilerVersion >= NET2005) {
+    if (vsVersion >= VS2005) {
         if (whatPch ==  pchGenerateAuto) whatPch = (pchOption)0;
         if (whatPch ==  pchUseUsingSpecific) whatPch = (pchOption)2;
     }
     return attrE(_UsePrecompiledHeader, whatPch, /*ifNot*/ pchUnset);
 }
 
-inline XmlOutput::xml_output xformExceptionHandlingNET2005(exceptionHandling eh, DotNET compilerVersion)
+inline XmlOutput::xml_output xformExceptionHandlingVS2005(exceptionHandling eh, VisualStudioVersion vsVersion)
 {
     if (eh == ehDefault)
         return noxml();
 
-    if (compilerVersion >= NET2005)
+    if (vsVersion >= VS2005)
         return attrE(_ExceptionHandling, eh);
 
     return attrS(_ExceptionHandling, (eh == ehNoSEH ? "true" : "false"));
@@ -457,7 +457,7 @@ bool VCCLCompilerTool::parseOption(const char* option)
                 ExceptionHandling = ehNone;
                 AdditionalOptions += option;
             }
-            if (config->CompilerVersion < NET2005
+            if (config->VSVersion < VS2005
                 && ExceptionHandling == ehSEH) {
                 ExceptionHandling = ehNone;
                 AdditionalOptions += option;
@@ -504,7 +504,7 @@ bool VCCLCompilerTool::parseOption(const char* option)
                 BrowseInformationFile = option+3;
                 break;
             case 'S':
-                if (config->CompilerVersion < NET2013)
+                if (config->VSVersion < VS2013)
                     found = false;
                 // Ignore this flag. Visual Studio 2013 takes care of this setting.
                 break;
@@ -652,10 +652,10 @@ bool VCCLCompilerTool::parseOption(const char* option)
                 RuntimeLibrary = rtMultiThreadedDebug;
             break;
         } else if (second == 'P') {
-            if (config->CompilerVersion >= NET2010) {
+            if (config->VSVersion >= VS2010) {
                 MultiProcessorCompilation = _True;
                 MultiProcessorCompilationProcessorCount = option+3;
-            } else if (config->CompilerVersion >= NET2005) {
+            } else if (config->VSVersion >= VS2005) {
                 AdditionalOptions += option;
             } else {
                 warn_msg(WarnLogic, "/MP option is not supported in Visual C++ < 2005, ignoring.");
@@ -834,7 +834,7 @@ bool VCCLCompilerTool::parseOption(const char* option)
             break;
         case 'p':
             if(third == '6' && fourth == '4') {
-                if (config->CompilerVersion >= NET2010) {
+                if (config->VSVersion >= VS2010) {
                      // Deprecated for VS2010 but can be used under Additional Options.
                     AdditionalOptions += option;
                 } else {
@@ -909,7 +909,7 @@ bool VCCLCompilerTool::parseOption(const char* option)
                     ForceConformanceInForLoopScope = ((*c) == '-' ? _False : _True);
                 else if(fourth == 'w')
                     TreatWChar_tAsBuiltInType = ((*c) == '-' ? _False : _True);
-                else if (config->CompilerVersion >= NET2013 && strncmp(option + 4, "strictStrings", 13) == 0)
+                else if (config->VSVersion >= VS2013 && strncmp(option + 4, "strictStrings", 13) == 0)
                     AdditionalOptions += option;
                 else
                     found = false;
@@ -977,7 +977,7 @@ bool VCCLCompilerTool::parseOption(const char* option)
         if(second == '\0') {
             CompileOnly = _True;
         } else if(second == 'l') {
-            if (config->CompilerVersion < NET2005) {
+            if (config->VSVersion < VS2005) {
                 if(*(option+5) == 'n') {
                     CompileAsManaged = managedAssemblyPure;
                     TurnOffAssemblyGeneration = _True;
@@ -1121,7 +1121,7 @@ bool VCCLCompilerTool::parseOption(const char* option)
             DisableSpecificWarnings += option+3;
             break;
         case 'e':
-            if (config->CompilerVersion <= NET2008)
+            if (config->VSVersion <= VS2008)
                 AdditionalOptions += option;
             else
                 TreatSpecificWarningsAsErrors += option + 3;
@@ -1274,7 +1274,7 @@ bool VCLinkerTool::parseOption(const char* option)
 #endif
     bool found = true;
     const uint optionHash = elfHash(option);
-    if (config->CompilerVersion < NET2010) {
+    if (config->VSVersion < VS2010) {
         switch (optionHash) {
         case 0x3360dbe: // /ALIGN[:number]
         case 0x1485c34: // /ALLOWBIND[:NO]
@@ -1488,7 +1488,7 @@ bool VCLinkerTool::parseOption(const char* option)
         break;
     case 0x0341877: // /LTCG[:NOSTATUS|:STATUS]
         config->WholeProgramOptimization = _True;
-        if (config->CompilerVersion >= NET2005) {
+        if (config->VSVersion >= VS2005) {
             LinkTimeCodeGeneration = optLTCGEnabled;
             if(*(option+5) == ':') {
                 const char* str = option+6;
@@ -1703,7 +1703,7 @@ bool VCLinkerTool::parseOption(const char* option)
         Version = option+9;
         break;
     case 0x0034c50: // /WS[:NO]
-        if (config->CompilerVersion >= NET2010) {
+        if (config->VSVersion >= VS2010) {
             if(*(option+3) == ':')
                 TreatWarningsAsErrors = _False;
             else
@@ -1784,7 +1784,7 @@ bool VCMIDLTool::parseOption(const char* option)
 
     const uint optionHash = elfHash(option);
 
-    if (config->CompilerVersion < NET2010) {
+    if (config->VSVersion < VS2010) {
         switch (optionHash) {
         case 0x5b1cb97: // /app_config
         case 0x5a2fc64: // /client {none|stub}
@@ -2163,7 +2163,7 @@ void VCFilter::modifyPCHstage(QString str)
             lines << "* This file is auto-generated by qmake since no PRECOMPILED_SOURCE was";
             lines << "* specified, and is used as the common stdafx.cpp. The file is only";
             lines << QLatin1String("* generated when creating ")
-                     + (Config->CompilerVersion < NET2010 ? ".vcproj" : ".vcxproj")
+                     + (Config->VSVersion < VS2010 ? ".vcproj" : ".vcxproj")
                      + " project files, and is not used for";
             lines << "* command line compilations by nmake.";
             lines << "*";
@@ -2510,7 +2510,7 @@ void VCProjectWriter::write(XmlOutput &xml, const VCCLCompilerTool &tool)
         << attrT(_EnableFiberSafeOptimizations, tool.EnableFiberSafeOptimizations)
         << attrT(_EnableFunctionLevelLinking, tool.EnableFunctionLevelLinking)
         << attrT(_EnableIntrinsicFunctions, tool.EnableIntrinsicFunctions)
-        << xformExceptionHandlingNET2005(tool.ExceptionHandling, tool.config->CompilerVersion)
+        << xformExceptionHandlingVS2005(tool.ExceptionHandling, tool.config->VSVersion)
         << attrT(_ExpandAttributedSource, tool.ExpandAttributedSource)
         << attrE(_FavorSizeOrSpeed, tool.FavorSizeOrSpeed, /*ifNot*/ favorNone)
 
@@ -2549,7 +2549,7 @@ void VCProjectWriter::write(XmlOutput &xml, const VCCLCompilerTool &tool)
         << attrT(_TurnOffAssemblyGeneration, tool.TurnOffAssemblyGeneration)
         << attrT(_UndefineAllPreprocessorDefinitions, tool.UndefineAllPreprocessorDefinitions)
         << attrX(_UndefinePreprocessorDefinitions, tool.UndefinePreprocessorDefinitions)
-        << xformUsePrecompiledHeaderForNET2005(tool.UsePrecompiledHeader, tool.config->CompilerVersion)
+        << xformUsePrecompiledHeaderForVS2005(tool.UsePrecompiledHeader, tool.config->VSVersion)
         << attrT(_WarnAsError, tool.WarnAsError)
         << attrE(_WarningLevel, tool.WarningLevel, /*ifNot*/ warningLevelUnknown)
         << attrT(_WholeProgramOptimization, tool.WholeProgramOptimization)

@@ -53,16 +53,16 @@
 
 QT_BEGIN_NAMESPACE
 
-enum DotNET {
-    NETUnknown = 0,
-    NET2002 = 0x70,
-    NET2003 = 0x71,
-    NET2005 = 0x80,
-    NET2008 = 0x90,
-    NET2010 = 0xa0,
-    NET2012 = 0xb0,
-    NET2013 = 0xc0,
-    NET2015 = 0xd0
+enum VisualStudioVersion {
+    VSUnknown = 0,
+    VS2002 = 0x70,
+    VS2003 = 0x71,
+    VS2005 = 0x80,
+    VS2008 = 0x90,
+    VS2010 = 0xa0,
+    VS2012 = 0xb0,
+    VS2013 = 0xc0,
+    VS2015 = 0xd0
 };
 
 /*
@@ -849,7 +849,7 @@ public:
     VCConfiguration();
     ~VCConfiguration(){}
 
-    DotNET                  CompilerVersion;
+    VisualStudioVersion     VSVersion;
 
     // Variables
     triState                ATLMinimizesCRunTimeLibraryUsage;
