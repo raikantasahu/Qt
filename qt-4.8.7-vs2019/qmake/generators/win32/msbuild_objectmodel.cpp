@@ -390,9 +390,14 @@ void VCXProjectWriter::write(XmlOutput &xml, VCProjectSingleConfig &tool)
 
     xml << decl("1.0", "utf-8")
         << tag("Project")
-        << attrTag("DefaultTargets","Build")
-        << attrTag("ToolsVersion", "4.0")
-        << attrTag("xmlns", "http://schemas.microsoft.com/developer/msbuild/2003")
+        << attrTag("DefaultTargets","Build");
+
+    // Starting from VS 2019, ToolsVersion is not necessary.
+    if (tool.Configuration.VSVersion < VS2019) {
+        xml << attrTag("ToolsVersion", getToolsVersion(tool.Configuration));
+    }
+
+    xml << attrTag("xmlns", "http://schemas.microsoft.com/developer/msbuild/2003")
         << tag("ItemGroup")
         << attrTag("Label", "ProjectConfigurations");
 
@@ -408,6 +413,7 @@ void VCXProjectWriter::write(XmlOutput &xml, VCProjectSingleConfig &tool)
         << tagValue("ProjectGuid", tool.ProjectGUID)
         << tagValue("RootNamespace", tool.Name)
         << tagValue("Keyword", tool.Keyword)
+        << attrTagS("WindowsTargetPlatformVersion", tool.TargetPlatformVersion)
         << closetag();
 
     // config part.
@@ -534,9 +540,14 @@ void VCXProjectWriter::write(XmlOutput &xml, VCProjectSingleConfig &tool)
     xmlFilter.setIndentString("  ");
 
     xmlFilter << decl("1.0", "utf-8")
-              << tag("Project")
-              << attrTag("ToolsVersion", "4.0")
-              << attrTag("xmlns", "http://schemas.microsoft.com/developer/msbuild/2003");
+              << tag("Project");
+
+    // Starting from VS 2019, ToolsVersion is not necessary.
+    if (tool.Configuration.VSVersion < VS2019) {
+        xmlFilter << attrTag("ToolsVersion", getToolsVersion(tool.Configuration));
+    }
+
+    xmlFilter << attrTag("xmlns", "http://schemas.microsoft.com/developer/msbuild/2003");
 
     xmlFilter << tag("ItemGroup");
 
@@ -584,9 +595,15 @@ void VCXProjectWriter::write(XmlOutput &xml, VCProject &tool)
 
     xml << decl("1.0", "utf-8")
         << tag("Project")
-        << attrTag("DefaultTargets","Build")
-        << attrTag("ToolsVersion", "4.0")
-        << attrTag("xmlns", "http://schemas.microsoft.com/developer/msbuild/2003")
+        << attrTag("DefaultTargets","Build");
+
+    bool needToolsVersion = !(tool.SingleProjects.count() > 0 &&
+                              tool.SingleProjects[0].Configuration.VSVersion >= VS2019);
+    if (needToolsVersion) {
+        xml << attrTag("ToolsVersion", getToolsVersion(tool));
+    }
+
+    xml << attrTag("xmlns", "http://schemas.microsoft.com/developer/msbuild/2003")
         << tag("ItemGroup")
         << attrTag("Label", "ProjectConfigurations");
 
@@ -604,6 +621,7 @@ void VCXProjectWriter::write(XmlOutput &xml, VCProject &tool)
         << tagValue("ProjectGuid", tool.ProjectGUID)
         << tagValue("RootNamespace", tool.Name)
         << tagValue("Keyword", tool.Keyword)
+        << attrTagS("WindowsTargetPlatformVersion", tool.TargetPlatformVersion)
         << closetag();
 
     // config part.
@@ -746,9 +764,13 @@ void VCXProjectWriter::write(XmlOutput &xml, VCProject &tool)
     xmlFilter.setIndentString("  ");
 
     xmlFilter << decl("1.0", "utf-8")
-              << tag("Project")
-              << attrTag("ToolsVersion", "4.0")
-              << attrTag("xmlns", "http://schemas.microsoft.com/developer/msbuild/2003");
+              << tag("Project");
+
+    if (needToolsVersion) {
+        xmlFilter << attrTag("ToolsVersion", getToolsVersion(tool));
+    }
+
+    xmlFilter << attrTag("xmlns", "http://schemas.microsoft.com/developer/msbuild/2003");
 
     xmlFilter << tag("ItemGroup");
 
@@ -1592,6 +1614,33 @@ void VCXProjectWriter::write(XmlOutput &xml, VCFilter &tool)
     // unused in this generator
 }
 
+QString VCXProjectWriter::getToolsVersion(const VCConfiguration &tool)
+{
+    // For Visual Studio versions up to 2012, ToolsVersion needs to be 4.0.
+
+    switch(tool.VSVersion) {
+        case VS2019:
+            return "";
+        case VS2017:
+            return "15.0";
+        case VS2015:
+            return "14.0";
+        case VS2013:
+            return "12.0";
+    }
+
+    return "4.0";
+}
+
+QString VCXProjectWriter::getToolsVersion(const VCProject &tool)
+{
+    if ( tool.SingleProjects.count() == 0 )
+    {
+       return "4.0";
+    }
+    return getToolsVersion(tool.SingleProjects[0].Configuration);
+}
+
 void VCXProjectWriter::addFilters(VCProject &project, XmlOutput &xmlFilter, const QString &filtername)
 {
     bool added = false;
@@ -1983,6 +2032,7 @@ QString VCXProjectWriter::platformToolSetVersion(const VisualStudioVersion versi
         case VS2019:
             return "v142";
     }
+
     return QString();
 }
 

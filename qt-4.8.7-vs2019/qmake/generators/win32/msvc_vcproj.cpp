@@ -76,7 +76,13 @@ VisualStudioVersion which_visualstudio_version(QMakeProject* project)
         return current_version;
 
     QString msvcVersion = project->first("MSVC_VERSION");
-    if (msvcVersion == "VS2015") {
+    if (msvcVersion == "VS2019") {
+        current_version = VS2019;
+    }
+    else if (msvcVersion == "VS2017") {
+        current_version = VS2017;
+    }
+    else if (msvcVersion == "VS2015") {
         current_version = VS2015;
     }
     else if (msvcVersion == "VS2013") {
@@ -213,6 +219,7 @@ bool VcprojGenerator::writeProjectMakefile()
     // Generate project file
     if(project->first("TEMPLATE") == "vcapp" ||
        project->first("TEMPLATE") == "vclib") {
+        debug_msg(1, "Number of configurations: %d", mergedProjects.count());
         if (!mergedProjects.count()) {
             warn_msg(WarnLogic, "Generator: MSVC.NET: no single configuration created, cannot output project!");
             return false;
@@ -238,6 +245,7 @@ bool VcprojGenerator::writeProjectMakefile()
         mergedProject.Version = mergedProjects.at(0)->vcProject.Version;
         mergedProject.ProjectGUID = project->isEmpty("QMAKE_UUID") ? getProjectUUID().toString().toUpper() : project->first("QMAKE_UUID");
         mergedProject.Keyword = project->first("VCPROJ_KEYWORD");
+        mergedProject.TargetPlatformVersion = project->first("VCPROJ_TARGET_PLATFORM_VERSION");
         mergedProject.SccProjectName = mergedProjects.at(0)->vcProject.SccProjectName;
         mergedProject.SccLocalPath = mergedProjects.at(0)->vcProject.SccLocalPath;
         mergedProject.PlatformName = mergedProjects.at(0)->vcProject.PlatformName;
@@ -358,6 +366,12 @@ void VcprojGenerator::writeSubDirs(QTextStream &t)
     }
 
     switch(which_visualstudio_version(project)) {
+    case VS2019:
+        t << _slnHeader160;
+        break;
+    case VS2017:
+        t << _slnHeader150;
+        break;
     case VS2015:
         t << _slnHeader140;
         break;
@@ -832,6 +846,7 @@ void VcprojGenerator::initProject()
     }
 
     vcProject.Keyword = project->first("VCPROJ_KEYWORD");
+    vcProject.TargetPlatformVersion = project->first("VCPROJ_TARGET_PLATFORM_VERSION");
     if (project->isEmpty("CE_SDK") || project->isEmpty("CE_ARCH")) {
         vcProject.PlatformName = (is64Bit ? "x64" : "Win32");
     } else {

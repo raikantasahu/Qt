@@ -306,7 +306,7 @@ static QString vcCommandSeparator()
     return cmdSep;
 }
 
-static QString toString(VisualStudioVersion vsVersion)
+QString toString(VisualStudioVersion vsVersion)
 {
    switch(vsVersion)
    {
@@ -535,7 +535,7 @@ bool VCCLCompilerTool::parseOption(const char* option)
             case 'S':
                 // Visual Studio 2013 and above take care of this setting.
                 if (config->VSVersion < VS2013) {
-                    debug_msg(1, "Visual Studio Version: 0x%x", toString(config->VSVersion));
+                    debug_msg(1, "Visual Studio Version: %s", toString(config->VSVersion).toLatin1().constData());
                     found = false;
                 }
                 break;

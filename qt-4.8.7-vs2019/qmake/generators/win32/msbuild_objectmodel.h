@@ -178,6 +178,8 @@ public:
     void write(XmlOutput &, VCFilter &);
 
 private:
+    static QString getToolsVersion(const VCConfiguration &tool);
+    static QString getToolsVersion(const VCProject &tool);
     static void addFilters(VCProject &project, XmlOutput &xmlFilter, const QString &filterName);
     static void outputFilter(VCProject &project, XmlOutput &xml, XmlOutput &xmlFilter, const QString &filtername);
     static void outputFileConfigs(VCProject &project, XmlOutput &xml, XmlOutput &xmlFilter, const VCFilterFile &info, const QString &filtername);

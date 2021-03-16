@@ -67,6 +67,8 @@ enum VisualStudioVersion {
     VS2019 = 0xf0
 };
 
+QString toString(VisualStudioVersion vsVersion);
+
 /*
     This Object model is of course VERY simplyfied,
     and does not actually follow the original MSVC
@@ -969,6 +971,7 @@ public:
     QString                 Version;
     QString                 ProjectGUID;
     QString                 Keyword;
+    QString                 TargetPlatformVersion;
     QString                 SccProjectName;
     QString                 SccLocalPath;
     QString                 PlatformName;
@@ -1107,6 +1110,7 @@ public:
     QString                 Version;
     QString                 ProjectGUID;
     QString                 Keyword;
+    QString                 TargetPlatformVersion;
     QString                 SccProjectName;
     QString                 SccLocalPath;
     QString                 PlatformName;
