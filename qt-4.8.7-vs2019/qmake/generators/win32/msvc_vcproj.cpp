@@ -64,50 +64,6 @@ const char _GUIDFormFiles[]            = "{99349809-55BA-4b9d-BF79-8FDBB0286EB3}
 const char _GUIDExtraCompilerFiles[]   = "{E0D8C965-CC5F-43d7-AD63-FAEF0BBC0F85}";
 QT_END_NAMESPACE
 
-#ifdef Q_OS_WIN32
-#include <qt_windows.h>
-#include <windows/registry_p.h>
-
-QT_BEGIN_NAMESPACE
-
-struct {
-    VisualStudioVersion version;
-    const char *versionStr;
-    const char *regKey;
-} dotNetCombo[] = {
-#ifdef Q_OS_WIN64
-    {VS2013, "MSVC.NET 2013 (12.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\12.0\\Setup\\VC\\ProductDir"},
-    {VS2013, "MSVC.NET 2013 Express Edition (12.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\12.0\\Setup\\VC\\ProductDir"},
-    {VS2012, "MSVC.NET 2012 (11.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\11.0\\Setup\\VC\\ProductDir"},
-    {VS2012, "MSVC.NET 2012 Express Edition (11.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\11.0\\Setup\\VC\\ProductDir"},
-    {VS2010, "MSVC.NET 2010 (10.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\10.0\\Setup\\VC\\ProductDir"},
-    {VS2010, "MSVC.NET 2010 Express Edition (10.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\10.0\\Setup\\VC\\ProductDir"},
-    {VS2008, "MSVC.NET 2008 (9.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\9.0\\Setup\\VC\\ProductDir"},
-    {VS2008, "MSVC.NET 2008 Express Edition (9.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\9.0\\Setup\\VC\\ProductDir"},
-    {VS2005, "MSVC.NET 2005 (8.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\8.0\\Setup\\VC\\ProductDir"},
-    {VS2005, "MSVC.NET 2005 Express Edition (8.0)", "Software\\Wow6432Node\\Microsoft\\VCExpress\\8.0\\Setup\\VC\\ProductDir"},
-    {VS2003, "MSVC.NET 2003 (7.1)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\7.1\\Setup\\VC\\ProductDir"},
-    {VS2002, "MSVC.NET 2002 (7.0)", "Software\\Wow6432Node\\Microsoft\\VisualStudio\\7.0\\Setup\\VC\\ProductDir"},
-#else
-    {VS2013, "MSVC.NET 2013 (12.0)", "Software\\Microsoft\\VisualStudio\\12.0\\Setup\\VC\\ProductDir"},
-    {VS2013, "MSVC.NET 2013 Express Edition (12.0)", "Software\\Microsoft\\VCExpress\\12.0\\Setup\\VC\\ProductDir"},
-    {VS2012, "MSVC.NET 2012 (11.0)", "Software\\Microsoft\\VisualStudio\\11.0\\Setup\\VC\\ProductDir"},
-    {VS2012, "MSVC.NET 2012 Express Edition (11.0)", "Software\\Microsoft\\VCExpress\\11.0\\Setup\\VC\\ProductDir"},
-    {VS2010, "MSVC.NET 2010 (10.0)", "Software\\Microsoft\\VisualStudio\\10.0\\Setup\\VC\\ProductDir"},
-    {VS2010, "MSVC.NET 2010 Express Edition (10.0)", "Software\\Microsoft\\VCExpress\\10.0\\Setup\\VC\\ProductDir"},
-    {VS2008, "MSVC.NET 2008 (9.0)", "Software\\Microsoft\\VisualStudio\\9.0\\Setup\\VC\\ProductDir"},
-    {VS2008, "MSVC.NET 2008 Express Edition (9.0)", "Software\\Microsoft\\VCExpress\\9.0\\Setup\\VC\\ProductDir"},
-    {VS2005, "MSVC.NET 2005 (8.0)", "Software\\Microsoft\\VisualStudio\\8.0\\Setup\\VC\\ProductDir"},
-    {VS2005, "MSVC.NET 2005 Express Edition (8.0)", "Software\\Microsoft\\VCExpress\\8.0\\Setup\\VC\\ProductDir"},
-    {VS2003, "MSVC.NET 2003 (7.1)", "Software\\Microsoft\\VisualStudio\\7.1\\Setup\\VC\\ProductDir"},
-    {VS2002, "MSVC.NET 2002 (7.0)", "Software\\Microsoft\\VisualStudio\\7.0\\Setup\\VC\\ProductDir"},
-#endif
-    {VSUnknown, "", ""},
-};
-
-QT_END_NAMESPACE
-#endif
-
 QT_BEGIN_NAMESPACE
 VisualStudioVersion which_visualstudio_version(QMakeProject* project)
 {
