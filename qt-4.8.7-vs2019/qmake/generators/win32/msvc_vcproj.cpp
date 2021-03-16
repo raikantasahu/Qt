@@ -109,7 +109,7 @@ QT_END_NAMESPACE
 #endif
 
 QT_BEGIN_NAMESPACE
-VisualStudioVersion which_dotnet_version()
+VisualStudioVersion which_visualstudio_version(QMakeProject* project)
 {
 #ifndef Q_OS_WIN32
     return VS2002; // Always generate 7.0 versions on other platforms
@@ -119,57 +119,34 @@ VisualStudioVersion which_dotnet_version()
     if(current_version != VSUnknown)
         return current_version;
 
-    // Fallback to .NET 2002
-    current_version = VS2002;
-
-    QStringList warnPath;
-    QHash<VisualStudioVersion, QString> installPaths;
-    int installed = 0;
-    int i = 0;
-    for(; dotNetCombo[i].version; ++i) {
-        QString path = qt_readRegistryKey(HKEY_LOCAL_MACHINE, dotNetCombo[i].regKey);
-        if (!path.isEmpty() && installPaths.value(dotNetCombo[i].version) != path) {
-            installPaths.insert(dotNetCombo[i].version, path);
-            ++installed;
-            current_version = dotNetCombo[i].version;
-                        warnPath += QString("%1").arg(dotNetCombo[i].versionStr);
-        }
+    QString msvcVersion = project->first("MSVC_VERSION");
+    if (msvcVersion == "VS2015") {
+        current_version = VS2015;
     }
-
-    if (installed < 2)
-        return current_version;
-
-    // More than one version installed, search directory path
-    QString paths = qgetenv("PATH");
-    QStringList pathlist = paths.toLower().split(";");
-
-    i = installed = 0;
-    for(; dotNetCombo[i].version; ++i) {
-        QString productPath = qt_readRegistryKey(HKEY_LOCAL_MACHINE, dotNetCombo[i].regKey).toLower();
-                if (productPath.isEmpty())
-                        continue;
-        QStringList::iterator it;
-        for(it = pathlist.begin(); it != pathlist.end(); ++it) {
-            if((*it).contains(productPath)) {
-                ++installed;
-                current_version = dotNetCombo[i].version;
-                warnPath += QString("%1 in path").arg(dotNetCombo[i].versionStr);
-                                break;
-            }
-        }
+    else if (msvcVersion == "VS2013") {
+        current_version = VS2013;
     }
-        switch(installed) {
-        case 1:
-                break;
-        case 0:
-                warn_msg(WarnLogic, "Generator: MSVC.NET: Found more than one version of Visual Studio, but"
-                                 " none in your path! Fallback to lowest version (%s)", warnPath.join(", ").toLatin1().data());
-                break;
-        default:
-                warn_msg(WarnLogic, "Generator: MSVC.NET: Found more than one version of Visual Studio in"
-                                 " your path! Fallback to lowest version (%s)", warnPath.join(", ").toLatin1().data());
-                break;
-        }
+    else if (msvcVersion == "VS2012") {
+        current_version = VS2012;
+    }
+    else if (msvcVersion == "VS2010") {
+        current_version = VS2010;
+    }
+    else if (msvcVersion == "VS2008") {
+        current_version = VS2008;
+    }
+    else if (msvcVersion == "VS2005") {
+        current_version = VS2005;
+    }
+    else if (msvcVersion == "VS2003") {
+        current_version = VS2003;
+    }
+    else if (msvcVersion == "VS2002") {
+        current_version = VS2002;
+    }
+    else {
+       warn_msg(WarnLogic, "Generator: MSVC.NET: Unknown Visual Studio version '%s'", msvcVersion.toLatin1().constData());
+    }
 
     return current_version;
 #endif
@@ -188,6 +165,12 @@ const char _slnHeader110[]      = "Microsoft Visual Studio Solution File, Format
                                   "\n# Visual Studio 2012";
 const char _slnHeader120[]      = "Microsoft Visual Studio Solution File, Format Version 12.00"
                                   "\n# Visual Studio 2013";
+const char _slnHeader140[]      = "Microsoft Visual Studio Solution File, Format Version 14.00"
+                                  "\n# Visual Studio 2015";
+const char _slnHeader150[]      = "Microsoft Visual Studio Solution File, Format Version 15.00"
+                                  "\n# Visual Studio 2015";
+const char _slnHeader160[]      = "Microsoft Visual Studio Solution File, Format Version 16.00"
+                                  "\n# Visual Studio 2019";
                                   // The following UUID _may_ change for later servicepacks...
                                   // If so we need to search through the registry at
                                   // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\7.0\Projects
@@ -418,7 +401,10 @@ void VcprojGenerator::writeSubDirs(QTextStream &t)
         return;
     }
 
-    switch(which_dotnet_version()) {
+    switch(which_visualstudio_version(project)) {
+    case VS2015:
+        t << _slnHeader140;
+        break;
     case VS2013:
         t << _slnHeader120;
         break;
@@ -442,7 +428,7 @@ void VcprojGenerator::writeSubDirs(QTextStream &t)
         break;
     default:
         t << _slnHeader70;
-        warn_msg(WarnLogic, "Generator: MSVC.NET: Unknown version (%d) of MSVC detected for .sln", which_dotnet_version());
+        warn_msg(WarnLogic, "Generator: MSVC.NET: Unknown version (0x%x) of MSVC detected for .sln", which_visualstudio_version(project));
         break;
     }
 
@@ -702,7 +688,9 @@ void VcprojGenerator::init()
     if (init_flag)
         return;
     init_flag = true;
-    is64Bit = (project->first("QMAKE_TARGET.arch") == "x86_64");
+    QString msvcTargetArch = project->first("MSVC_TARGET_ARCH");
+    is64Bit = (msvcTargetArch == "x64");
+    debug_msg(1, "msvcTargetArch: %s, is64Bit: %s", msvcTargetArch.toLatin1().constData(), (is64Bit ? "true" : "false"));
     projectWriter = createProjectWriter();
 
     if(project->first("TEMPLATE") == "vcsubdirs") //too much work for subdirs
@@ -847,7 +835,17 @@ void VcprojGenerator::initProject()
 
     // Own elements -----------------------------
     vcProject.Name = unescapeFilePath(project->first("QMAKE_ORIG_TARGET"));
-    switch(which_dotnet_version()) {
+
+    switch(which_visualstudio_version(project)) {
+    case VS2019:
+        vcProject.Version = "16.00";
+        break;
+    case VS2017:
+        vcProject.Version = "15.00";
+        break;
+    case VS2015:
+        vcProject.Version = "14.00";
+        break;
     case VS2013:
         vcProject.Version = "13.00";
         break;
@@ -873,7 +871,7 @@ void VcprojGenerator::initProject()
         break;
     default:
         vcProject.Version = "7.00";
-        warn_msg(WarnLogic, "Generator: MSVC.NET: Unknown version (%d) of MSVC detected for .vcproj", which_dotnet_version());
+        warn_msg(WarnLogic, "Generator: MSVC.NET: Unknown version (0x%x) of MSVC detected for .vcproj", which_visualstudio_version(project));
         break;
     }
 
@@ -883,6 +881,8 @@ void VcprojGenerator::initProject()
     } else {
         vcProject.PlatformName = project->values("CE_SDK").join(" ") + " (" + project->first("CE_ARCH") + ")";
     }
+    debug_msg(1, "PlatformName: %s", vcProject.PlatformName.toLatin1().constData());
+
     // These are not used by Qt, but may be used by customers
     vcProject.SccProjectName = project->first("SCCPROJECTNAME");
     vcProject.SccLocalPath = project->first("SCCLOCALPATH");
@@ -895,7 +895,7 @@ void VcprojGenerator::initConfiguration()
     // - Do this first since main configuration elements may need
     // - to know of certain compiler/linker options
     VCConfiguration &conf = vcProject.Configuration;
-    conf.VSVersion = which_dotnet_version();
+    conf.VSVersion = which_visualstudio_version(project);
 
     initCompilerTool();
 

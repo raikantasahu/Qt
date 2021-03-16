@@ -306,6 +306,35 @@ static QString vcCommandSeparator()
     return cmdSep;
 }
 
+static QString toString(VisualStudioVersion vsVersion)
+{
+   switch(vsVersion)
+   {
+      case VS2002:
+         return "2002";
+      case VS2003:
+         return "2003";
+      case VS2005:
+         return "2005";
+      case VS2008:
+         return "2008";
+      case VS2010:
+         return "2010";
+      case VS2012:
+         return "2012";
+      case VS2013:
+         return "2013";
+      case VS2015:
+         return "2015";
+      case VS2017:
+         return "2017";
+      case VS2019:
+         return "2019";
+   }
+
+   return "Unknown";
+}
+
 // VCCLCompilerTool -------------------------------------------------
 VCCLCompilerTool::VCCLCompilerTool()
     :        AssemblerOutput(asmListingNone),
@@ -504,9 +533,11 @@ bool VCCLCompilerTool::parseOption(const char* option)
                 BrowseInformationFile = option+3;
                 break;
             case 'S':
-                if (config->VSVersion < VS2013)
+                // Visual Studio 2013 and above take care of this setting.
+                if (config->VSVersion < VS2013) {
+                    debug_msg(1, "Visual Studio Version: 0x%x", toString(config->VSVersion));
                     found = false;
-                // Ignore this flag. Visual Studio 2013 takes care of this setting.
+                }
                 break;
             case 'r':
                 BrowseInformation = brNoLocalSymbols;

@@ -62,7 +62,9 @@ enum VisualStudioVersion {
     VS2010 = 0xa0,
     VS2012 = 0xb0,
     VS2013 = 0xc0,
-    VS2015 = 0xd0
+    VS2015 = 0xd0,
+    VS2017 = 0xe0,
+    VS2019 = 0xf0
 };
 
 /*

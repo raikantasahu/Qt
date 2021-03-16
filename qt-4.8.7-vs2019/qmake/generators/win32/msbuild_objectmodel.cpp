@@ -1971,12 +1971,17 @@ QString VCXProjectWriter::generateCondition(const VCConfiguration &config)
 
 QString VCXProjectWriter::platformToolSetVersion(const VisualStudioVersion version)
 {
-    switch (version)
-    {
-    case VS2012:
-        return "v110";
-    case VS2013:
-        return "v120";
+    switch (version) {
+        case VS2012:
+            return "v110";
+        case VS2013:
+            return "v120";
+        case VS2015:
+            return "v140";
+        case VS2017:
+            return "v141";
+        case VS2019:
+            return "v142";
     }
     return QString();
 }
